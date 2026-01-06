@@ -1,7 +1,210 @@
-<form id="eventForm">
-  <input name="title" placeholder="Event Title" required>
-  <input type="date" name="date" required>
-  <textarea name="description"></textarea>
-  <input name="url" placeholder="Event link (optional)">
-  <button type="submit">Submit Event</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Submit an Event | Hudson Grocery Co-op</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --green-dark: #027934;
+      --green-light: #97c93c;
+      --bg-soft: #f7fbf6;
+      --text-dark: #1f2933;
+      --radius: 14px;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-soft);
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 3rem auto;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: var(--green-dark);
+      font-size: 1.6rem;
+      text-align: center;
+    }
+
+    p.subtitle {
+      text-align: center;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.4rem;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.75rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid #d1e3d8;
+      font-size: 0.95rem;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--green-dark);
+      box-shadow: 0 0 0 2px rgba(2,121,52,0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #5f6c7b;
+      margin-top: 0.25rem;
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: 700;
+      background: var(--green-dark);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(2,121,52,0.3);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 1.25rem;
+      font-size: 0.9rem;
+      text-align: center;
+      display: none;
+    }
+
+    .status.success {
+      color: var(--green-dark);
+    }
+
+    .status.error {
+      color: #b91c1c;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      margin-top: 2rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Submit a Community Event</h1>
+      <p class="subtitle">
+        Hosting something that supports our community?  
+        Share it with Hudson Grocery Co-op.
+      </p>
+
+      <form id="eventForm">
+        <label>Event Title *</label>
+        <input name="title" required placeholder="Example: Local Farmers Market" />
+
+        <label>Event Date *</label>
+        <input type="date" name="date" required />
+
+        <label>Event Description</label>
+        <textarea name="description" placeholder="Tell us a little about the event..."></textarea>
+        <div class="hint">Keep it short and welcoming.</div>
+
+        <label>Event Link (optional)</label>
+        <input name="url" placeholder="https://example.com/event" />
+
+        <button type="submit">Submit Event</button>
+
+        <div class="status success" id="successMsg">
+          Thank you! Your event has been submitted for review 🌿
+        </div>
+
+        <div class="status error" id="errorMsg">
+          Something went wrong. Please try again later.
+        </div>
+      </form>
+    </div>
+
+    <footer>
+      Events are reviewed before appearing on the calendar.
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById("eventForm");
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      successMsg.style.display = "none";
+      errorMsg.style.display = "none";
+
+      const data = {
+        title: form.title.value.trim(),
+        date: form.date.value,
+        description: form.description.value.trim(),
+        url: form.url.value.trim(),
+        approved: false
+      };
+
+      // 🔗 Replace this with your real API endpoint (Supabase, etc.)
+      fetch("https://YOUR-ENDPOINT-HERE", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Network error");
+        successMsg.style.display = "block";
+        form.reset();
+      })
+      .catch(() => {
+        errorMsg.style.display = "block";
+      });
+    });
+  </script>
+</body>
+</html>
