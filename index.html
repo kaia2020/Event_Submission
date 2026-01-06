@@ -1,0 +1,6 @@
+fetch("https://YOUR_PROJECT.supabase.co/rest/v1/events?approved=eq.true")
+  .then(function(res){ return res.json(); })
+  .then(function(events){
+    window.calendarEvents = events;
+    renderCalendar();
+  });
