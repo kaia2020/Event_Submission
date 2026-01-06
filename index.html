@@ -1,6 +1,7 @@
-fetch("https://YOUR_PROJECT.supabase.co/rest/v1/events?approved=eq.true")
-  .then(function(res){ return res.json(); })
-  .then(function(events){
-    window.calendarEvents = events;
-    renderCalendar();
-  });
+<form id="eventForm">
+  <input name="title" placeholder="Event Title" required>
+  <input type="date" name="date" required>
+  <textarea name="description"></textarea>
+  <input name="url" placeholder="Event link (optional)">
+  <button type="submit">Submit Event</button>
+</form>
