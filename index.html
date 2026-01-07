@@ -47,16 +47,33 @@
       margin-bottom: 2rem;
     }
 
+    /* ===== FORM LAYOUT FIX ===== */
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    form label,
+    form input,
+    form textarea,
+    form .hint,
+    form button {
+      width: 100%;
+      max-width: 420px;
+    }
+
     label {
       display: block;
       font-weight: 600;
       margin-top: 1.25rem;
       margin-bottom: 0.4rem;
+      text-align: left;
     }
 
     input,
     textarea {
-      width: 100%;
       padding: 0.75rem 0.85rem;
       border-radius: 10px;
       border: 1px solid #d1e3d8;
@@ -79,11 +96,11 @@
       font-size: 0.8rem;
       color: #5f6c7b;
       margin-top: 0.25rem;
+      text-align: left;
     }
 
     button {
       margin-top: 2rem;
-      width: 100%;
       padding: 0.9rem;
       font-size: 1rem;
       font-weight: 700;
@@ -110,6 +127,7 @@
       font-size: 0.9rem;
       text-align: center;
       display: none;
+      max-width: 420px;
     }
 
     .status.success {
@@ -145,8 +163,8 @@
         <input type="date" name="date" required />
 
         <label>Event Location *</label>
-        <input name="Location" required placeholder="Example: 1701 Ward Ave #200 Hudson,WI 54016" />  
-        
+        <input name="location" required placeholder="Example: 1701 Ward Ave #200, Hudson WI" />
+
         <label>Event Description</label>
         <textarea name="description" placeholder="Tell us a little about the event..."></textarea>
         <div class="hint">Keep it short and welcoming.</div>
@@ -185,21 +203,20 @@
       const data = {
         title: form.title.value.trim(),
         date: form.date.value,
+        location: form.location.value.trim(),
         description: form.description.value.trim(),
         url: form.url.value.trim(),
         approved: false
       };
 
-      // 🔗 Replace this with your real API endpoint (Supabase, etc.)
-      fetch("https://hudsongrocery.coop › pages › events", {
+      /* Replace with your real endpoint */
+      fetch("YOUR_ENDPOINT_HERE", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
       .then(res => {
-        if (!res.ok) throw new Error("Network error");
+        if (!res.ok) throw new Error();
         successMsg.style.display = "block";
         form.reset();
       })
