@@ -1,55 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Submit an Event | Hudson Grocery Co-op</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>
-:root {
-  --green-dark: #027934;
-  --bg-soft: #f7fbf6;
-  --text-dark: #1f2933;
-  --radius: 14px;
-}
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: var(--bg-soft);
-  color: var(--text-dark);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 1rem;
-}
-.container { max-width: 520px; width: 100%; }
-.card {
-  background: #fff;
-  border-radius: var(--radius);
-  padding: 2rem;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.06);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-h1 { margin-top:0; color: var(--green-dark); font-size: 1.8rem; text-align:center; }
-p.subtitle { text-align:center; font-size:1rem; margin-bottom:2rem; }
-form { width:100%; display:flex; flex-direction:column; align-items:center; }
-label { display:block; font-weight:600; margin-top:1rem; margin-bottom:0.4rem; width:100%; }
-input, textarea { width:100%; padding:0.75rem; border-radius:10px; border:1px solid #d1e3d8; font-size:1rem; }
-input:focus, textarea:focus { outline:none; border-color:var(--green-dark); box-shadow:0 0 0 2px rgba(2,121,52,0.15); }
-textarea { resize:vertical; min-height:100px; }
-.hint { font-size:0.85rem; color:#5f6c7b; margin-top:0.25rem; text-align:left; width:100%; }
-button { margin-top:2rem; width:100%; max-width:300px; padding:0.9rem; font-size:1rem; font-weight:700; background:var(--green-dark); color:#fff; border:none; border-radius:999px; cursor:pointer; }
-button:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(2,121,52,0.3); }
-.status { margin-top:1rem; font-size:0.95rem; text-align:center; display:none; }
-.status.success { color:var(--green-dark); }
-.status.error { color:#b91c1c; }
-footer { text-align:center; font-size:0.85rem; margin-top:2rem; color:#6b7280; }
-</style>
+  <meta charset="UTF-8" />
+  <title>Submit an Event | Hudson Grocery Co-op</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0; font-family: system-ui; background: #f7fbf6;
+      color: #1f2933; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1rem;
+    }
+    .card { background:#fff; border-radius:14px; padding:2rem; max-width:520px; width:100%; box-shadow:0 12px 30px rgba(0,0,0,0.06); display:flex; flex-direction:column; align-items:center; }
+    h1 { text-align:center; color:#027934; font-size:1.8rem; margin-top:0; }
+    p.subtitle { text-align:center; font-size:1rem; margin-bottom:2rem; }
+    form { width:100%; display:flex; flex-direction:column; align-items:center; }
+    label { width:100%; margin-top:1rem; margin-bottom:0.4rem; font-weight:600; display:block; }
+    input, textarea { width:100%; padding:0.75rem; border-radius:10px; border:1px solid #d1e3d8; font-size:1rem; }
+    textarea { resize:vertical; min-height:100px; }
+    .hint { font-size:0.85rem; color:#5f6c7b; margin-top:0.25rem; text-align:left; width:100%; }
+    button { margin-top:2rem; width:100%; max-width:300px; padding:0.9rem; font-size:1rem; font-weight:700; background:#027934; color:#fff; border:none; border-radius:999px; cursor:pointer; }
+    .status { margin-top:1rem; font-size:0.95rem; text-align:center; display:none; }
+    .status.success { color:#027934; }
+    .status.error { color:#b91c1c; }
+    footer { text-align:center; font-size:0.85rem; margin-top:2rem; color:#6b7280; }
+  </style>
 </head>
 <body>
-<div class="container">
   <div class="card">
     <h1>Submit a Community Event</h1>
     <p class="subtitle">Hosting a Hudson Grocery Co-op event? Share it with us & we will add it to our calendar!</p>
@@ -57,64 +32,53 @@ footer { text-align:center; font-size:0.85rem; margin-top:2rem; color:#6b7280; }
     <form id="eventForm">
       <label>Event Title *</label>
       <input name="title" required placeholder="Example: HGC Cookie Decorating" />
-
       <label>Event Date *</label>
       <input type="date" name="date" required />
-
       <label>Event Location *</label>
       <input name="location" required placeholder="Example: 1701 Ward Ave #200 Hudson, WI" />
-
       <label>Event Description</label>
       <textarea name="description" placeholder="Tell us a little about the event..."></textarea>
       <div class="hint">Keep it short and welcoming.</div>
-
       <label>Event Link (optional)</label>
       <input name="url" placeholder="https://example.com/event" />
-
       <button type="submit">Submit Event</button>
-
       <div class="status success" id="successMsg">Thank you! Your event has been submitted 🌿</div>
       <div class="status error" id="errorMsg">Something went wrong. Please try again later.</div>
     </form>
+    <footer>Events are reviewed before appearing on the calendar.</footer>
   </div>
-  <footer>Events are reviewed before appearing on the calendar.</footer>
-</div>
 
-<script>
-const form = document.getElementById("eventForm");
-const successMsg = document.getElementById("successMsg");
-const errorMsg = document.getElementById("errorMsg");
+  <script>
+    const form = document.getElementById("eventForm");
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
 
-form.addEventListener("submit", async function(e) {
-  e.preventDefault();
-  successMsg.style.display = "none";
-  errorMsg.style.display = "none";
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      successMsg.style.display = "none";
+      errorMsg.style.display = "none";
 
-  const data = {
-    title: form.title.value.trim(),
-    date: form.date.value,
-    location: form.location.value.trim(),
-    description: form.description.value.trim(),
-    url: form.url.value.trim(),
-    approved: true
-  };
+      const data = {
+        title: form.title.value.trim(),
+        date: form.date.value,
+        location: form.location.value.trim(),
+        description: form.description.value.trim(),
+        url: form.url.value.trim(),
+        approved: false
+      };
 
-  try {
-    const res = await fetch("/events", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      fetch("/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Network error");
+        successMsg.style.display = "block";
+        form.reset();
+      })
+      .catch(() => { errorMsg.style.display = "block"; });
     });
-
-    if (!res.ok) throw new Error("Network error");
-
-    successMsg.style.display = "block";
-    form.reset();
-  } catch (err) {
-    console.error(err);
-    errorMsg.style.display = "block";
-  }
-});
-</script>
+  </script>
 </body>
 </html>
