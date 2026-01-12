@@ -14,28 +14,37 @@
       --radius: 14px;
     }
 
+    /* Body + full viewport centering */
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-soft);
       color: var(--text-dark);
+
       display: flex;
-      justify-content: center;
+      justify-content: center; /* horizontal centering */
+      align-items: center;     /* vertical centering */
+      min-height: 100vh;       /* full viewport */
+      padding: 0;
+    }
+
+    /* Container to hold the card */
+    .container {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      min-height: 100vh;
       padding: 1rem;
     }
 
-    .container {
-      max-width: 520px;
-      width: 100%;
-    }
-
+    /* Card style */
     .card {
       background: #fff;
       border-radius: var(--radius);
       padding: 2rem;
       box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -58,6 +67,7 @@
       width: 100%;
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     label {
@@ -68,7 +78,8 @@
       width: 100%;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       padding: 0.75rem 0.85rem;
       border-radius: 10px;
@@ -92,6 +103,8 @@
       font-size: 0.85rem;
       color: #5f6c7b;
       margin-top: 0.25rem;
+      text-align: left;
+      width: 100%;
     }
 
     button {
@@ -126,14 +139,26 @@
       display: none;
     }
 
-    .status.success { color: var(--green-dark); }
-    .status.error { color: #b91c1c; }
+    .status.success {
+      color: var(--green-dark);
+    }
+
+    .status.error {
+      color: #b91c1c;
+    }
 
     footer {
       text-align: center;
       font-size: 0.85rem;
       margin-top: 2rem;
       color: #6b7280;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      .card {
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
@@ -147,21 +172,21 @@
       </p>
 
       <form id="eventForm">
-        <label for="title">Event Title *</label>
-        <input id="title" name="title" required placeholder="Example: HGC Cookie Decorating" />
+        <label>Event Title *</label>
+        <input name="title" required placeholder="Example: HGC Cookie Decorating" />
 
-        <label for="date">Event Date *</label>
-        <input type="date" id="date" name="date" required />
+        <label>Event Date *</label>
+        <input type="date" name="date" required />
 
-        <label for="location">Event Location *</label>
-        <input id="location" name="location" required placeholder="Example: 1701 Ward Ave #200 Hudson, WI" />
+        <label>Event Location *</label>
+        <input name="location" required placeholder="Example: 1701 Ward Ave #200 Hudson, WI" />
 
-        <label for="description">Event Description</label>
-        <textarea id="description" name="description" placeholder="Tell us a little about the event..."></textarea>
+        <label>Event Description</label>
+        <textarea name="description" placeholder="Tell us a little about the event..."></textarea>
         <div class="hint">Keep it short and welcoming.</div>
 
-        <label for="url">Event Link (optional)</label>
-        <input id="url" name="url" placeholder="https://example.com/event" />
+        <label>Event Link (optional)</label>
+        <input name="url" placeholder="https://example.com/event" />
 
         <button type="submit">Submit Event</button>
 
@@ -185,37 +210,34 @@
     const successMsg = document.getElementById("successMsg");
     const errorMsg = document.getElementById("errorMsg");
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // reset status
       successMsg.style.display = "none";
       errorMsg.style.display = "none";
 
       const data = {
-        title: document.getElementById("title").value.trim(),
-        date: document.getElementById("date").value,
-        location: document.getElementById("location").value.trim(),
-        description: document.getElementById("description").value.trim(),
-        url: document.getElementById("url").value.trim(),
+        title: form.title.value.trim(),
+        date: form.date.value,
+        location: form.location.value.trim(),
+        description: form.description.value.trim(),
+        url: form.url.value.trim(),
         approved: false
       };
 
-      try {
-        const res = await fetch("https://hgc-events-backend.onrender.com/events", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
+      fetch("https://hgc-events-backend.onrender.com/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
         if (!res.ok) throw new Error("Network error");
-
         successMsg.style.display = "block";
         form.reset();
-      } catch (err) {
-        console.error(err);
+      })
+      .catch(() => {
         errorMsg.style.display = "block";
-      }
+      });
     });
   </script>
 </body>
