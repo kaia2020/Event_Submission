@@ -6,11 +6,12 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-app.use(express.static("public"));
-
 // ---------- Middleware ----------
 app.use(cors());
 app.use(express.json());
+
+// ---------- Static files (submission form) ----------
+app.use(express.static("public"));
 
 // ---------- JSON storage ----------
 const DATA_FILE = path.join(__dirname, "events.json");
@@ -20,8 +21,7 @@ if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([]));
 }
 
-// ---------- Root health check ----------
-// Health check endpoint (optional)
+// ---------- Health check ----------
 app.get("/api", (req, res) => {
   res.send("HGC Events API is running 🌿");
 });
@@ -48,7 +48,7 @@ app.post("/events", (req, res) => {
       location: req.body.location,
       description: req.body.description || "",
       url: req.body.url || "",
-      approved: true // auto-approved for now
+      approved: true
     };
 
     events.push(newEvent);
