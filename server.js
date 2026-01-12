@@ -6,40 +6,36 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// ---------- Middleware ----------
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public")); // serve index.html
 
-// ---------- Static files (submission form) ----------
-app.use(express.static("public"));
-
-// ---------- JSON storage ----------
 const DATA_FILE = path.join(__dirname, "events.json");
 
-// Ensure JSON file exists
+// ensure JSON file exists
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([]));
 }
 
-// ---------- Health check ----------
-app.get("/api", (req, res) => {
-  res.send("HGC Events API is running 🌿");
+// Serve index.html at root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ---------- GET events ----------
+// GET all events
 app.get("/events", (req, res) => {
   try {
-    const data = fs.readFileSync(DATA_FILE, "utf-8");
+    const data = fs.readFileSync(DATA_FILE, "utf8");
     res.json(JSON.parse(data));
   } catch (err) {
     res.status(500).json({ error: "Failed to read events" });
   }
 });
 
-// ---------- POST new event ----------
+// POST new event
 app.post("/events", (req, res) => {
   try {
-    const events = JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
+    const events = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
 
     const newEvent = {
       id: Date.now(),
@@ -60,7 +56,6 @@ app.post("/events", (req, res) => {
   }
 });
 
-// ---------- Start server ----------
 app.listen(PORT, () => {
   console.log(`HGC Events backend running on port ${PORT}`);
 });
