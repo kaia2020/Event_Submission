@@ -225,11 +225,12 @@
         approved: false
       };
 
-      fetch("https://hgc-events-backend.onrender.com/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
+fetch("https://hgc-event-submission.onrender.com/events", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+})
+
       .then(res => {
         if (!res.ok) throw new Error("Network error");
         successMsg.style.display = "block";
