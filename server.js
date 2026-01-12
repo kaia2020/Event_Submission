@@ -6,6 +6,8 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+app.use(express.static("public"));
+
 // ---------- Middleware ----------
 app.use(cors());
 app.use(express.json());
@@ -19,7 +21,8 @@ if (!fs.existsSync(DATA_FILE)) {
 }
 
 // ---------- Root health check ----------
-app.get("/", (req, res) => {
+// Health check endpoint (optional)
+app.get("/api", (req, res) => {
   res.send("HGC Events API is running 🌿");
 });
 
