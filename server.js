@@ -6,6 +6,23 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+app.get("/test", (req, res) => {
+  try {
+    const events = JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
+    events.push({
+      id: "TEST",
+      title: "Test Event",
+      date: "2099-01-01"
+    });
+
+    fs.writeFileSync(DATA_FILE, JSON.stringify(events, null, 2));
+    res.send("events.json is writable ✅");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("events.json is NOT writable ❌");
+  }
+});
+
 // Serve static front-end files
 app.use(express.static(path.join(__dirname, "public")));
 
