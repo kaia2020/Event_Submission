@@ -1,65 +1,63 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const cors = require('cors');
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const cors = require("cors");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
-// Middleware
-app.use(cors()); // allows cross-origin requests from Shopify page
+// ---------- Middleware ----------
+app.use(cors());
 app.use(express.json());
 
-// Path to JSON file
-const EVENTS_FILE = path.join(__dirname, 'events.json');
+// ---------- JSON storage ----------
+const DATA_FILE = path.join(__dirname, "events.json");
 
-// Helper: read JSON file
-function readEvents() {
-  if (!fs.existsSync(EVENTS_FILE)) return [];
-  const data = fs.readFileSync(EVENTS_FILE, 'utf8');
+// Ensure JSON file exists
+if (!fs.existsSync(DATA_FILE)) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify([]));
+}
+
+// ---------- Root health check ----------
+app.get("/", (req, res) => {
+  res.send("HGC Events API is running 🌿");
+});
+
+// ---------- GET events ----------
+app.get("/events", (req, res) => {
   try {
-    return JSON.parse(data);
+    const data = fs.readFileSync(DATA_FILE, "utf-8");
+    res.json(JSON.parse(data));
   } catch (err) {
-    console.error('Error parsing events.json:', err);
-    return [];
+    res.status(500).json({ error: "Failed to read events" });
   }
-}
-
-// Helper: write JSON file
-function writeEvents(events) {
-  fs.writeFileSync(EVENTS_FILE, JSON.stringify(events, null, 2), 'utf8');
-}
-
-// GET all approved events
-app.get('/events', (req, res) => {
-  const events = readEvents().filter(e => e.approved);
-  res.json(events);
 });
 
-// POST a new event submission
-app.post('/events', (req, res) => {
-  const { title, date, location, description = '', url = '', approved = false } = req.body;
+// ---------- POST new event ----------
+app.post("/events", (req, res) => {
+  try {
+    const events = JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
 
-  if (!title || !date || !location) {
-    return res.status(400).json({ error: 'Missing required fields: title, date, location' });
+    const newEvent = {
+      id: Date.now(),
+      title: req.body.title,
+      date: req.body.date,
+      location: req.body.location,
+      description: req.body.description || "",
+      url: req.body.url || "",
+      approved: true // auto-approved for now
+    };
+
+    events.push(newEvent);
+    fs.writeFileSync(DATA_FILE, JSON.stringify(events, null, 2));
+
+    res.status(201).json(newEvent);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to save event" });
   }
-
-  const events = readEvents();
-
-  // Prevent duplicate submission (same title + date)
-  const duplicate = events.find(e => e.title === title && e.date === date);
-  if (duplicate) {
-    return res.status(409).json({ error: 'Duplicate event detected' });
-  }
-
-  const newEvent = { title, date, location, description, url, approved };
-  events.push(newEvent);
-  writeEvents(events);
-
-  res.status(201).json({ message: 'Event submitted successfully' });
 });
 
-// Start server
+// ---------- Start server ----------
 app.listen(PORT, () => {
   console.log(`HGC Events backend running on port ${PORT}`);
 });
