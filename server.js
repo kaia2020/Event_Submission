@@ -83,4 +83,6 @@ app.post("/events", (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => console.log("📥 Incoming event:", req.body);
+app.listen(PORT, () => {
+  console.log(`HGC Events backend running on port ${PORT}`);
+});
