@@ -56,6 +56,9 @@ app.get("/events", (req, res) => {
 
 // Add new event
 app.post("/events", (req, res) => {
+  console.log("📥 POST /events hit");
+  console.log("📦 Body received:", req.body);
+
   try {
     const events = JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
 
@@ -74,6 +77,7 @@ app.post("/events", (req, res) => {
 
     res.status(201).json(newEvent);
   } catch (err) {
+    console.error("❌ Save failed:", err);
     res.status(500).json({ error: "Failed to save event" });
   }
 });
